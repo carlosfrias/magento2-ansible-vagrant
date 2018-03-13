@@ -1,0 +1,21 @@
+---
+- name: Setting up Magento2 Cron Jobs
+  hosts: localhost
+  connection: local
+
+  become: no
+  become_method: sudo
+
+  tasks:
+  - name: Run jobs by schedule
+    cron:
+      job: php ~/repos/magento2/bin/magento cron:run  | grep -v 'Ran jobs by schedule' >> /home/vagrant/repos/magento2/var/log/magento.cron.log
+
+  - name: Run update jobs
+    cron:
+      job: php ~/repos/magento2/update/cron.php >> /home/vagrant/repos/magento2/var/log/update.cron.log
+
+  - name: Setup and run cron jobs
+    cron:
+      job: php ~/repos/magento2/bin/magento setup:cron:run >> /home/vagrant/repos/magento2/var/log/setup.cron.log
+
